@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Grade Tracker | CodeAlpha</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <header>
+        <h1>Student Grade Tracker</h1>
+    </header>
+
+    <div class="container">
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Average Score</h3>
+                <div class="value" th:text="${average}">0.00</div>
+                <div class="icon">📊</div>
+            </div>
+            <div class="stat-card">
+                <h3>Highest Score</h3>
+                <div class="value" th:text="${highest}" style="color: var(--success);">0.0</div>
+                <div class="icon">📈</div>
+            </div>
+            <div class="stat-card">
+                <h3>Lowest Score</h3>
+                <div class="value" th:text="${lowest}" style="color: var(--danger);">0.0</div>
+                <div class="icon">📉</div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Sidebar: Add Student -->
+            <div class="input-section">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Add New Student</h2>
+                <form action="/add" method="post">
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" name="name" placeholder="Enter name..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Grade / Marks</label>
+                        <input type="number" name="grade" step="0.1" min="0" max="100" placeholder="0 - 100" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Record</button>
+                </form>
+                
+                <form action="/clear" method="post">
+                    <button type="submit" class="btn btn-danger">Clear All Records</button>
+                </form>
+            </div>
+
+            <!-- Main: Students List -->
+            <div class="table-section">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Student Records</h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="student : ${students}">
+                                <td th:text="${student.name}" style="font-weight: 600;">Student Name</td>
+                                <td th:text="${student.grade}">0.0</td>
+                                <td>
+                                    <span th:class="${student.grade >= 40 ? 'grade-badge high' : 'grade-badge low'}"
+                                          th:text="${student.grade >= 40 ? 'Pass' : 'Fail'}">
+                                        Pass
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(students)}">
+                                <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                                    No records found. Add students to see the report.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
